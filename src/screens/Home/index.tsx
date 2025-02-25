@@ -21,17 +21,10 @@ const Home = () => {
   const { setTotalBudget } = useBudget();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "Home">>();
 
-  // Função para formatar o valor enquanto o usuário digita
   const formatCurrency = (value: string) => {
-    // Remove tudo que não for número
     const numericValue = value.replace(/\D/g, "");
-    // Converte para número e divide por 100 para simular casas decimais
     const floatValue = parseFloat(numericValue) / 100;
-    // Formata para o padrão monetário brasileiro
-    if (!isNaN(floatValue)) {
-      return floatValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-    }
-    return "";
+    return !isNaN(floatValue) ? floatValue.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "";
   };
 
   const handleChange = (text: string) => {
@@ -39,7 +32,6 @@ const Home = () => {
   };
 
   const handleStart = () => {
-    // Converte o valor formatado para número antes de salvar
     const parsedBudget = parseFloat(budget.replace(/[R$\s.]/g, "").replace(",", "."));
     if (!isNaN(parsedBudget) && parsedBudget > 0) {
       setTotalBudget(parsedBudget);

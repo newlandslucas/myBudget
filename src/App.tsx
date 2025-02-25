@@ -3,22 +3,25 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { BudgetProvider } from "./context/BudgeContext";
 import Home from "./screens/Home";
-// import AddItemScreen from "./src/screens/AddItemScreen";
-// import ListScreen from "./src/screens/ListScreen";
-// import SummaryScreen from "./src/screens/SummaryScreen";
-import { RootStackParamList } from "./types/navigation"; // Importa os tipos das rotas
+import AddItemScreen from "./screens/AddItemScreen";
+import ListScreen from "./screens/ListScreen";
 
-const Stack = createNativeStackNavigator<RootStackParamList>(); // Aplica a tipagem
+export type RootStackParamList = {
+  Home: undefined;
+  AddItem: undefined;
+  List: undefined;
+};
 
-const App: React.FC = () => {
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const App = () => {
   return (
     <BudgetProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={Home} options={{headerShown: false}} />
-          {/* <Stack.Screen name="AddItem" component={AddItemScreen} />
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="AddItem" component={AddItemScreen} />
           <Stack.Screen name="List" component={ListScreen} />
-          <Stack.Screen name="Summary" component={SummaryScreen} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </BudgetProvider>
