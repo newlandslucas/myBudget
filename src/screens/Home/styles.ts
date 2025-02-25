@@ -10,7 +10,6 @@ export const Container = styled.View`
   flex: 1;
   padding: 20px;
   background-color: #131016; /* Cor de fundo padrão */
-  margin-top: 10%;
   margin-bottom: 10%;
 `;
 
@@ -57,7 +56,7 @@ export const Input = styled.TextInput`
 `;
 
 export const StyledButton = styled.TouchableOpacity`
-  background-color: #007bff;
+  background-color: #6272a4;
   padding: 12px;
   border-radius: 8px;
   align-items: center;
