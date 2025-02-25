@@ -1,72 +1,106 @@
 import React, { useState } from "react";
 import { useBudget } from "../../context/BudgeContext";
 import { useNavigation } from "@react-navigation/native";
-import { Container, Label, Input, StyledButton, ButtonText, RoomList, RoomItem } from "./styles";
-import { FlatList } from "react-native";
+import { 
+  Container, Label, InputRow, Input, RoundButton, ButtonText, 
+  StyledButton, RoomItem, SafeArea, RoomItemText, FooterContainer, 
+  RoomScrollContainer, RoomScrollView, NoRoomsText, ModalBackground, 
+  ModalContainer, ModalView, ModalInput, ModalButton, ModalButtonText, FooterModal
+} from "./styles";
+import { Text, TouchableWithoutFeedback, Keyboard, Alert, Modal, View, KeyboardAvoidingView, Platform } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/navigation";
 
 const AddItemScreen: React.FC = () => {
   const [roomName, setRoomName] = useState("");
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
-  const [itemName, setItemName] = useState("");
-  const [itemPrice, setItemPrice] = useState("");
-
-  const { rooms, addRoom, addItem } = useBudget();
+  const [modalVisible, setModalVisible] = useState(false);
+  const { rooms, addRoom } = useBudget();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleAddRoom = () => {
-    if (roomName.trim()) {
-      addRoom(roomName.trim());
-      setRoomName("");
+    const trimmedRoomName = roomName.trim();
+
+    if (!trimmedRoomName) return;
+
+    const roomExists = rooms.some(room => room.name.toLowerCase() === trimmedRoomName.toLowerCase());
+
+    if (roomExists) {
+      Alert.alert("Erro", "Este cômodo já foi adicionado!");
+      return;
     }
+
+    addRoom(trimmedRoomName);
+    setRoomName("");
   };
 
-  const handleAddItem = () => {
-    if (selectedRoom && itemName.trim() && parseFloat(itemPrice) > 0) {
-      addItem(selectedRoom, itemName.trim(), parseFloat(itemPrice));
-      setItemName("");
-      setItemPrice("");
-    }
+  const openModal = (roomId: string) => {
+    setSelectedRoom(roomId);
+    setModalVisible(true);
   };
 
   return (
-    <Container>
-      {/* Criar Cômodo */}
-      <Label>Adicionar Cômodo:</Label>
-      <Input value={roomName} onChangeText={setRoomName} placeholder="Ex: Sala, Cozinha..." />
-      <StyledButton onPress={handleAddRoom}>
-        <ButtonText>Adicionar Cômodo</ButtonText>
-      </StyledButton>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeArea>
+        <Container>
+          <Label>Adicionar Cômodo</Label>
+          <InputRow>
+            <Input 
+              value={roomName} 
+              onChangeText={setRoomName} 
+              placeholder="Ex: Sala, Cozinha..." 
+              placeholderTextColor="#888" 
+            />
+            <RoundButton onPress={handleAddRoom}>
+              <Text style={{ color: "#fff", fontSize: 24, fontWeight: "bold" }}>+</Text>
+            </RoundButton>
+          </InputRow>
 
-      {/* Selecionar Cômodo */}
-      <Label>Escolha um cômodo:</Label>
-      <FlatList
-        data={rooms}
-        keyExtractor={(room) => room.id}
-        renderItem={({ item }) => (
-          <RoomItem onPress={() => setSelectedRoom(item.id)} isSelected={selectedRoom === item.id}>
-            <ButtonText>{item.name}</ButtonText>
-          </RoomItem>
-        )}
-      />
+          <Label>Cômodos</Label>
+          {rooms.length === 0 ? (
+            <NoRoomsText>Nenhum cômodo registrado.</NoRoomsText>
+          ) : (
+            <RoomScrollContainer>
+              <RoomScrollView>
+                {rooms.map((room) => (
+                  <RoomItem key={room.id} onPress={() => openModal(room.id)} isSelected={selectedRoom === room.id}>
+                    <RoomItemText isSelected={selectedRoom === room.id}>{room.name}</RoomItemText>
+                  </RoomItem>
+                ))}
+              </RoomScrollView>
+            </RoomScrollContainer>
+          )}
+        </Container>
 
-      {/* Adicionar Itens ao Cômodo Selecionado */}
-      {selectedRoom && (
-        <>
-          <Label>Adicionar Item ao {rooms.find((room) => room.id === selectedRoom)?.name}:</Label>
-          <Input value={itemName} onChangeText={setItemName} placeholder="Nome do item" />
-          <Input keyboardType="numeric" value={itemPrice} onChangeText={setItemPrice} placeholder="Preço (R$)" />
-          <StyledButton onPress={handleAddItem}>
-            <ButtonText>Adicionar Item</ButtonText>
+        {/* Modal para adicionar itens ao cômodo */}
+        <Modal visible={modalVisible} transparent animationType="slide">
+          <View style={{ flex: 1, justifyContent: "flex-end" }}>
+            <ModalBackground onPress={() => setModalVisible(false)} />
+
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+              <FooterModal>
+                <ModalView>
+                  <Label style={{ alignSelf: "flex-start", marginLeft: 8 }}>Adicionar Item</Label>
+                  <ModalInput placeholder="Nome do item" placeholderTextColor="#888" />
+                  <ModalInput keyboardType="numeric" placeholder="Preço (R$)" placeholderTextColor="#888" />
+
+                  <ModalButton onPress={() => setModalVisible(false)}>
+                    <ModalButtonText>Adicionar</ModalButtonText>
+                  </ModalButton>
+                </ModalView>
+              </FooterModal>
+            </KeyboardAvoidingView>
+          </View>
+        </Modal>
+
+        {/* Footer com o botão fixo */}
+        <FooterContainer>
+          <StyledButton onPress={() => navigation.navigate("List")}>
+            <ButtonText>Ver Resumo</ButtonText>
           </StyledButton>
-        </>
-      )}
-
-      <StyledButton onPress={() => navigation.navigate("List")}>
-        <ButtonText>Ver Lista</ButtonText>
-      </StyledButton>
-    </Container>
+        </FooterContainer>
+      </SafeArea>
+    </TouchableWithoutFeedback>
   );
 };
 

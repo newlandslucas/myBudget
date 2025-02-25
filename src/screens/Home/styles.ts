@@ -2,20 +2,22 @@ import styled from "styled-components/native";
 import { SafeAreaView } from "react-native";
 
 export const SafeArea = styled(SafeAreaView)`
-  flex: 1;
-  background-color: #f8f9fa;
+   flex: 1;
+   background-color: #131016;
 `;
 
 export const Container = styled.View`
   flex: 1;
   padding: 20px;
-  justify-content: flex-start;
+  background-color: #131016; /* Cor de fundo padrão */
+  margin-top: 10%;
+  margin-bottom: 10%;
 `;
 
 export const Title = styled.Text`
   font-size: 32px;
   font-weight: bold;
-  color: #333;
+  color: #FFF;
   margin-bottom: 8px;
   margin-top: 46px;
   text-align: left;
@@ -36,13 +38,13 @@ export const InputContainer = styled.View`
 
 export const InputLabel = styled.Text`
   font-size: 16px;
-  color: #333;
-  margin-bottom: 8px;
+  color: #FFF;
+  margin-bottom: 12px;
   text-align: center;
 `;
 
 export const Input = styled.TextInput`
-  width: 80%;
+  width: 90%;
   height: 50px;
   border-width: 1px;
   border-color: #ccc;
@@ -59,7 +61,7 @@ export const StyledButton = styled.TouchableOpacity`
   padding: 12px;
   border-radius: 8px;
   align-items: center;
-  width: 80%;
+  width: 90%;
   justify-content: center;
   margin-top: 10px;
 `;

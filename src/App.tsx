@@ -1,4 +1,5 @@
 import React from "react";
+import { StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { BudgetProvider } from "./context/BudgeContext";
@@ -18,6 +19,7 @@ const App = () => {
   return (
     <BudgetProvider>
       <NavigationContainer>
+        <StatusBar barStyle="auto" />
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="AddItem" component={AddItemScreen} />

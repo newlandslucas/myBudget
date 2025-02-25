@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 export const Container = styled.View`
   flex: 1;
   padding: 16px;
-  background-color: #f8f9fa;
+  background-color: #131016;
 `;
 
 export const Title = styled.Text`
